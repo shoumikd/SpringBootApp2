@@ -13,38 +13,21 @@ public class Nifty50Model {
 
 	@Id
 	@GeneratedValue
-	@Column(name = "id")
-	private int id;
+	@Column(name = "symbol")
+	private String symbol;
 	
-	@Column(name = "company_name",nullable = false, columnDefinition = "text default '15-JUL-1980'")
+	@Column(name = "company_name")
 	private String companyName;
 
-	@Column(name = "industry",nullable = false, columnDefinition = "varchar(45) default '15-JUL-1980'")
+	@Column(name = "industry")
 	private String industry;
 
-	@Column(name = "symbol",nullable = false, columnDefinition = "varchar(45) default '15-JUL-1980'")
-	private String symbol;
-
-	@Column(name = "series",nullable = false, columnDefinition = "varchar(45) default '15-JUL-1980'")
+	@Column(name = "series")
 	private String series;
 	
-	/*
-	 * @Id
-	 * 
-	 * @GeneratedValue(strategy = GenerationType.IDENTITY)
-	 */
 	@Column(name = "isin_code",nullable = false,columnDefinition = "varchar(45) default '15-JUL-1980'")
 	private String isinCode;
 	
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
 	public String getCompanyName() {
 		return companyName;
 	}

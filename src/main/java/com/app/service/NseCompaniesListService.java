@@ -19,7 +19,7 @@ public class NseCompaniesListService {
 	}
 	
 	public void addDetails(NseCompaniesModel nseCompaniesModel) {
-		nseCompaniesListRepository.saveAndFlush(nseCompaniesModel);		
+		nseCompaniesListRepository.save(nseCompaniesModel);		
 	}
 	
 	public void updateDetails(NseCompaniesModel nseCompaniesModel) {
