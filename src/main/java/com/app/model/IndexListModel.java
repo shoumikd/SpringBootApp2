@@ -1,36 +1,33 @@
 package com.app.model;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "list_nse_index")
 public class IndexListModel {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name="index_id")
-	private int indexId;
-	
-	@Column(name="index_name", unique = true, nullable = false)
-	private String indexName;
-	
-	/*
-	 * @OneToMany private IndexLiveDataPriceModel indexLiveDataPriceModel;
-	 */
 
-	public int getIndexId() {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "index_id")
+	private long indexId;
+
+	@Column(name = "index_name", unique = true, nullable = false)
+	private String indexName;
+
+	public long getIndexId() {
 		return indexId;
 	}
 
-	public void setIndexId(int indexId) {
+	public void setIndexId(long indexId) {
 		this.indexId = indexId;
 	}
 
@@ -42,17 +39,4 @@ public class IndexListModel {
 		this.indexName = indexName;
 	}
 
-	/*
-	 * public IndexLiveDataPriceModel getIndexLiveDataPriceModel() { return
-	 * indexLiveDataPriceModel; }
-	 * 
-	 * public void setIndexLiveDataPriceModel(IndexLiveDataPriceModel
-	 * indexLiveDataPriceModel) { this.indexLiveDataPriceModel =
-	 * indexLiveDataPriceModel; }
-	 */
-	
-	
-	
-	
-	
 }

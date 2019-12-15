@@ -1,30 +1,23 @@
 package com.app.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 @Entity
-
 @Table(name="present_index_price")
-public class IndexLiveDataPriceModel extends IndexListModel {
+public class IndexLiveDataPriceModel /* extends IndexListModel */ {
 
-	/*
-	 * @Id
-	 * 
-	 * @GeneratedValue(strategy = GenerationType.AUTO)
-	 * 
-	 * @Column(name = "price_id") private int priceId;
-	 */
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "price_id")
+	private long priceId;
+
 	@Column(name = "perc_change")
 	private String percChange;
 
@@ -50,14 +43,19 @@ public class IndexLiveDataPriceModel extends IndexListModel {
 	private Double yearLow;
 
 	@Column(name = "update_Time")
-	@Temporal(value = TemporalType.TIMESTAMP)
-	private Date timeVal;
+	//@Temporal(value = TemporalType.TIMESTAMP)
+	private LocalDateTime timeVal;
+	
+	@Column(name = "list_nse_index_id")
+	private long nseIndexId;
+	
+	public long getPriceId() {
+		return priceId;
+	}
 
-	/*
-	 * public int getPriceId() { return priceId; }
-	 * 
-	 * public void setPriceId(int priceId) { this.priceId = priceId; }
-	 */
+	public void setPriceId(long priceId) {
+		this.priceId = priceId;
+	}
 
 	public String getPercChange() {
 		return percChange;
@@ -123,12 +121,27 @@ public class IndexLiveDataPriceModel extends IndexListModel {
 		this.yearLow = yearLow;
 	}
 
-	public Date getTimeVal() {
+	/*
+	 * public Date getTimeVal() { return timeVal; }
+	 * 
+	 * public void setTimeVal(Date timeVal) { this.timeVal = timeVal; }
+	 */	
+	
+	public LocalDateTime getTimeVal() {
 		return timeVal;
 	}
 
-	public void setTimeVal(Date timeVal) {
+	public void setTimeVal(LocalDateTime timeVal) {
 		this.timeVal = timeVal;
 	}
 
+	public long getNseIndexId() {
+		return nseIndexId;
+	}
+
+	public void setNseIndexId(long nseIndexId) {
+		this.nseIndexId = nseIndexId;
+	}
+
+	
 }

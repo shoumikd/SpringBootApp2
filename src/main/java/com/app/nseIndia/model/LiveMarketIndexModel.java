@@ -1,8 +1,10 @@
 package com.app.nseIndia.model;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 public class LiveMarketIndexModel {
 	
-	private String timeVal;
 	private String indexName;
 	private String percChange;
 	private Double previousClose;
@@ -13,12 +15,13 @@ public class LiveMarketIndexModel {
 	private Double yearHigh;
 	private Double yearLow;
 	private Double indexOrder;
+	private LocalDateTime timeVal;
 	
-	public String getTimeVal() {
+	public LocalDateTime getTimeVal() {
 		return timeVal;
 	}
 	public void setTimeVal(String timeVal) {
-		this.timeVal = timeVal;// NseDataModelUtility.removeCommaFromDate(timeVal);
+		this.timeVal = NseDataModelUtility.removeCommaFromDate(timeVal);// NseDataModelUtility.removeCommaFromDate(timeVal);
 	}
 	public String getIndexName() {
 		return indexName;
