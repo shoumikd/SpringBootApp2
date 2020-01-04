@@ -67,7 +67,7 @@ public class ReadLiveData {
 
 	@Async
 	//@Scheduled(cron="0/20 * * * * ?")//20 seconds
-	@Scheduled(cron = "0 0/2 * * * ?") // 1 minute
+	@Scheduled(cron = "0 0/20 * * * ?") // 1 minute
 	//@Scheduled(cron="0 0/5 9-16 * * ?")//every 1 minute between 9AM to 16PM
 	public void readIndexValue() {
 		//cron start
