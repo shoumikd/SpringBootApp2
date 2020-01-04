@@ -48,15 +48,17 @@ public class LiveMarketIndexService {
 	
 	public void populateIndexList(LiveMarketIndexModelList liveMarketIndexModelList) {		
 		for (LiveMarketIndexModel indexModel : liveMarketIndexModelList.getData()) {
-			IndexListModel indexListModel=new IndexListModel();
-			indexListModel.setIndexId(indexModel.getIndexOrder().longValue());
-			indexListModel.setIndexName(indexModel.getIndexName());
-			try {
-				liveMarketIndexRepository.save(indexListModel);
-				indexMap.put(indexListModel.getIndexName(), indexListModel.getIndexId());	
-			} catch (Exception e) {
-				e.printStackTrace();
-			}			
+			IndexListModel indexListModel = liveMarketIndexRepository.findByIndexName(indexModel.getIndexName());
+			if (indexListModel == null) {
+				indexListModel=new IndexListModel();
+				indexListModel.setIndexName(indexModel.getIndexName());
+				try {
+					liveMarketIndexRepository.save(indexListModel);					
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			indexMap.put(indexListModel.getIndexName(), (liveMarketIndexRepository.findByIndexName(indexModel.getIndexName())).getIndexId());
 		}		
 	}
 	

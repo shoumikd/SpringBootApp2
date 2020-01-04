@@ -8,6 +8,8 @@ import com.app.nseIndia.model.LiveMarketIndexModel;
 
 @Repository
 public interface LiveMarketIndexRepository extends JpaRepository<IndexListModel, Long> {	
+	
+	public IndexListModel findByIndexName(String indexName);
 
 
 }

@@ -21,7 +21,7 @@ public class LiveMarketIndexModel {
 		return timeVal;
 	}
 	public void setTimeVal(String timeVal) {
-		this.timeVal = NseDataModelUtility.removeCommaFromDate(timeVal);// NseDataModelUtility.removeCommaFromDate(timeVal);
+		this.timeVal = NseDataModelUtility.formatRequestDate(timeVal);// NseDataModelUtility.removeCommaFromDate(timeVal);
 	}
 	public String getIndexName() {
 		return indexName;

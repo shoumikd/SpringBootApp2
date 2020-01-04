@@ -1,12 +1,15 @@
 package com.app.job;
 
+import java.time.Duration;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
@@ -17,10 +20,9 @@ import com.app.model.CronStatusModel;
 import com.app.nseIndia.model.LiveMarketIndexModelList;
 import com.app.service.CronStatusService;
 import com.app.service.LiveMarketIndexService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
+@EnableAsync
 public class ReadLiveData {
 
 	private Logger logger = LoggerFactory.getLogger(ReadLiveData.class);
@@ -33,38 +35,14 @@ public class ReadLiveData {
 
 	private String liveMarketURI = "https://nseindia.com/live_market/dynaContent/live_watch/stock_watch/liveIndexWatchData.json";
 	
-	
-
-	/*
-	 * // @Scheduled(cron="0/20 * * * * ?")//20 seconds
-	 * 
-	 * @Scheduled(cron = "0 0/1 * * * ?") // 1 minute
-	 * // @Scheduled(cron="0 0/1 9-16 * * ?")//every 1 minute between 9AM to 16PM
-	 * public void read() { logger.info("ran at:" + System.currentTimeMillis());
-	 * RestTemplate rt = new RestTemplate(); LiveMarketIndexModelList
-	 * liveMarketIndexModelList; try { liveMarketIndexModelList =
-	 * rt.getForObject(liveMarketURI, LiveMarketIndexModelList.class);
-	 * liveMarketindexService.addDetails(liveMarketIndexModelList); } catch
-	 * (RestClientException e) { // TODO Auto-generated catch block
-	 * liveMarketIndexModelList = new LiveMarketIndexModelList();
-	 * LiveMarketIndexModel liveMarketIndexModel = new LiveMarketIndexModel();
-	 * liveMarketIndexModel.setIndexOrder(1.0);
-	 * liveMarketIndexModel.setIndexName("NIFTY");
-	 * liveMarketIndexModel.setHigh("5.00"); List<LiveMarketIndexModel> abc = new
-	 * ArrayList<LiveMarketIndexModel>(); abc.add(liveMarketIndexModel);
-	 * liveMarketIndexModelList.setData(abc); e.printStackTrace(); }
-	 * 
-	 * logger.info("Response:" + liveMarketIndexModelList); }
-	 */
-
 	@Scheduled(cron = "0 0 16 * * ?")
-	public void readIndex() {		
-		
+	public void readIndex() {				
 		//cron start
+		CronStatus cronStatus=CronStatus.INPROGRESS;
 		CronStatusModel cronStatusModel=new CronStatusModel();
 		cronStatusModel.setStartTime(new Date(System.currentTimeMillis()));
 		cronStatusModel.setCronName(ReadLiveData.class.getEnclosingMethod().getName());
-		cronStatusModel.setStatus(CronStatus.INPROGRESS.toString());
+		cronStatusModel.setStatus(cronStatus.toString());
 		cronStatusService.save(cronStatusModel);
 
 		//retrieve Index List
@@ -73,12 +51,11 @@ public class ReadLiveData {
 		try {
 			liveMarketIndexModelList = rt.getForObject(liveMarketURI, LiveMarketIndexModelList.class);
 			liveMarketindexService.populateIndexList(liveMarketIndexModelList);
+			cronStatus=CronStatus.SUCCESS;
 		} catch (RestClientException e) {
 			//cron Failure end
-			cronStatusModel.setEndTime(new Date(System.currentTimeMillis()));
-			cronStatusModel.setStatus(CronStatus.FAILURE.toString());
+			cronStatus=CronStatus.FAILURE;
 			cronStatusModel.setMessage(e.getMessage());
-			cronStatusService.save(cronStatusModel);
 			e.printStackTrace();
 		}
 		
@@ -88,9 +65,10 @@ public class ReadLiveData {
 		cronStatusService.save(cronStatusModel);
 	}
 
-	// @Scheduled(cron="0/20 * * * * ?")//20 seconds
-	@Scheduled(cron = "0 0/1 * * * ?") // 1 minute
-	// @Scheduled(cron="0 0/1 9-16 * * ?")//every 1 minute between 9AM to 16PM
+	@Async
+	//@Scheduled(cron="0/20 * * * * ?")//20 seconds
+	@Scheduled(cron = "0 0/2 * * * ?") // 1 minute
+	//@Scheduled(cron="0 0/5 9-16 * * ?")//every 1 minute between 9AM to 16PM
 	public void readIndexValue() {
 		//cron start
 		CronStatus cronStatus=CronStatus.INPROGRESS;
@@ -109,10 +87,8 @@ public class ReadLiveData {
 			cronStatus=liveMarketindexService.addIndexValue(liveMarketIndexModelList);
 		} catch (RestClientException e) {
 			//cron Failure end
-			cronStatusModel.setEndTime(new Date(System.currentTimeMillis()));
-			cronStatusModel.setStatus(CronStatus.FAILURE.toString());
+			cronStatus=CronStatus.FAILURE;
 			cronStatusModel.setMessage(e.getMessage());
-			cronStatusService.save(cronStatusModel);
 			e.printStackTrace();
 		}
 		
@@ -121,6 +97,15 @@ public class ReadLiveData {
 		cronStatusModel.setStatus(cronStatus.toString());
 		cronStatusService.save(cronStatusModel);
 	}
+	
+	@Bean
+    public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) 
+    {
+        return restTemplateBuilder
+           .setConnectTimeout(Duration.ofMillis(60000))
+           .setReadTimeout(Duration.ofMillis(60000))
+           .build();
+    }
 
 }
 
